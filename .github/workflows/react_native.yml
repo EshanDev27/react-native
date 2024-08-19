@@ -3,6 +3,7 @@ name: "Build Android App"
 on: 
   push:
   workflow_dispatch:
+    # branches: [main]
     # You can add push and pull_request triggers here 
 
 jobs:
@@ -51,11 +52,13 @@ jobs:
       - name: Build Android application
         run: |
           cd android
-          ./gradlew assembleRelease
+          # ./gradlew assembleRelease
+          # bundleRelease for aab
+          ./gradlew bundleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: app-release.apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: app-release.aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 3

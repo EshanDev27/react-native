@@ -9,11 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      # Set up environment variables for Java and Android SDK
-      JAVA_HOME: /opt/hostedtoolcache/Java_11/...
-      ANDROID_HOME: /usr/local/lib/android/sdk
-      PATH: $ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
+    # env:
+    #   # Set up environment variables for Java and Android SDK
+    #   JAVA_HOME: /opt/hostedtoolcache/Java_11/...
+    #   ANDROID_HOME: /usr/local/lib/android/sdk
+    #   PATH: $ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
 
     steps:
       - name: Checkout repository
@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '21'
           cache: 'gradle'
 
       - name: Set up Android SDK

@@ -2,19 +2,18 @@ name: "Build Android App"
 
 on: 
   push:
+    branches:
+      - main
+      - dev
+      - prod
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
-    # branches: [main]
-    # You can add push and pull_request triggers here 
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    # env:
-    #   # Set up environment variables for Java and Android SDK
-    #   JAVA_HOME: /opt/hostedtoolcache/Java_11/...
-    #   ANDROID_HOME: /usr/local/lib/android/sdk
-    #   PATH: $ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
 
     steps:
       - name: Checkout repository
@@ -38,6 +37,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'  # Adjust the Node.js version if needed
+
+      # - name: Set up environment file
+      #   run: |
+      #     if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+      #       cp .env.prod .env
+      #     elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+      #       cp .env.development .env
+      #     elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+      #       cp .env.staging .env
+      #     fi
 
       - name: Install Node.js dependencies
         run: |

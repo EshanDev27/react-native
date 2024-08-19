@@ -1,0 +1,61 @@
+name: "Build Android App"
+
+on: 
+  push:
+  workflow_dispatch:
+    # You can add push and pull_request triggers here 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      # Set up environment variables for Java and Android SDK
+      JAVA_HOME: /opt/hostedtoolcache/Java_11/...
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      PATH: $ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 33  # Set the API level according to your project needs
+          build-tools: 33.0.0
+          ndk-version: 21.4.7075529  # Adjust NDK version as per your needs
+
+      - name: Setup Node.js and Yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Adjust the Node.js version if needed
+
+      - name: Install Node.js dependencies
+        run: |
+          npm install -g yarn
+          yarn install
+
+      - name: Install Android dependencies
+        run: |
+          yarn android:clean
+          yarn android:dependencies
+
+      - name: Build Android application
+        run: |
+          cd android
+          ./gradlew assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 3

@@ -46,7 +46,7 @@ jobs:
       - name: Install Android dependencies
         run: |
           yarn android-clean
-          yarn android-dependencies
+          yarn android:dependencies
 
       - name: Build Android application
         run: |

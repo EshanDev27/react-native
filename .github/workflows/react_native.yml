@@ -45,8 +45,8 @@ jobs:
 
       - name: Install Android dependencies
         run: |
-          yarn android:clean
-          yarn android:dependencies
+          yarn android-clean
+          yarn android-dependencies
 
       - name: Build Android application
         run: |
@@ -57,5 +57,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-release.apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: android/app/build/outputs/apk/release/app-debug.apk
           retention-days: 3

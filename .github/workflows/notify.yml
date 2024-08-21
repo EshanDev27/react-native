@@ -3,6 +3,7 @@ name: Notify on Push or Pull Request
 on:
   push:
     branches:
+      - main
       - dev  # Triggers on any branch
   pull_request:
     types: [opened, edited, closed]
@@ -25,5 +26,5 @@ jobs:
             Event: ${{ github.event_name }}
             Branch: ${{ github.ref }}
             Sender: ${{ github.actor }}
-          to: 'intern61techcurve@gmail.com'  # Replace with the recipient's email
+          to: 'meru.techcurve@gmail.com'  # Replace with the recipient's email
           from: ${{ secrets.EMAIL_USERNAME }}  # Replace with the sender's email

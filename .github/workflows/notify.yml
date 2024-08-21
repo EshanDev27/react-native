@@ -25,5 +25,5 @@ jobs:
             Event: ${{ github.event_name }}
             Branch: ${{ github.ref }}
             Sender: ${{ github.actor }}
-          to: 'recipient@example.com'  # Replace with the recipient's email
+          to: 'intern61techcurve@gmail.com'  # Replace with the recipient's email
           from: ${{ secrets.EMAIL_USERNAME }}  # Replace with the sender's email

@@ -1,0 +1,12 @@
+# android/fastlane/Fastfile
+default_platform(:android)
+
+platform :android do
+  desc "Deploy a new version to the Google Play Store"
+  lane :deploy do
+    upload_to_play_store(
+      track: 'production', # You can also use 'beta', 'alpha', etc.
+      aab: './app/build/outputs/bundle/release/app-release.aab'
+    )
+  end
+end

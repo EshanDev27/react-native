@@ -1,11 +1,11 @@
-name: "Build Android App"
+name: "Build and Deploy Android App"
 
 on: 
   push:
     branches:
-      - main
       - dev
       - prod
+      - main
   pull_request:
     branches:
       - main
@@ -29,45 +29,50 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
         with:
-          api-level: 33  # Set the API level according to your project needs
+          api-level: 33
           build-tools: 33.0.0
-          ndk-version: 21.4.7075529  # Adjust NDK version as per your needs
+          ndk-version: 21.4.7075529
 
       - name: Setup Node.js and Yarn
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # Adjust the Node.js version if needed
-
-      # - name: Set up environment file
-      #   run: |
-      #     if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-      #       cp .env.prod .env
-      #     elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-      #       cp .env.development .env
-      #     elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
-      #       cp .env.staging .env
-      #     fi
+          node-version: '18'
 
       - name: Install Node.js dependencies
         run: |
           npm install -g yarn
           yarn install
 
-      - name: Install Android dependencies
+      - name: Set Environment File
         run: |
-          yarn android-clean
-          yarn android:dependencies
+          if [[ ${{ github.ref }} == 'refs/heads/dev' ]]; then
+            export ENVFILE=.env.dev
+          elif [[ ${{ github.ref }} == 'refs/heads/prod' ]]; then
+            export ENVFILE=.env.prod
+          else
+            export ENVFILE=.env
+          fi
+
+      - name: Clean Gradle build
+        run: |
+          cd android
+          ./gradlew clean
 
       - name: Build Android application
         run: |
           cd android
-          # ./gradlew assembleRelease
-          # bundleRelease for aab
-          ./gradlew bundleRelease
+          ENVFILE=$ENVFILE ./gradlew assembleRelease --scan --info
 
-      - name: Upload APK
+      - name: Upload AAB as Artifact
         uses: actions/upload-artifact@v3
         with:
           name: app-release.aab
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 3
+
+      - name: Deploy to Play Store
+        env:
+          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          cd android
+          bundle exec fastlane deploy
